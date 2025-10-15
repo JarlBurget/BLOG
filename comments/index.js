@@ -50,6 +50,10 @@ app.post("/comments/:id", (req, res) => {
   }
 });
 
+app.post("/events", (req, res) => {
+  console.log("Received event:", req.body.type);
+  res.send({});
+});
 
 app.listen(PORT, () => {
   console.log(`Comment Service is running on http://localhost:${PORT}`);

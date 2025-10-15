@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const axios = require("axios");
 
 const app = express();
 const PORT = 5000;
@@ -21,10 +22,23 @@ app.post("/posts", (req, res) => {
       title: title,
     };
     posts.push(post);
+
+    axios.post("http://localhost:5005/events", {
+        type: "PostCreated",
+        data: post,
+    }).catch((err) => {
+        console.error("Error sending event to Event Bus:", err);
+    });
+
     res.status(201).json({ post: post, message: "Post created successfully" });
   } catch (error) {
     console.error("Error creating post:", error);
   }
+});
+
+app.post("/events", (req, res) => {
+  console.log("Received event:", req.body.type);
+  res.send({});
 });
 
 app.listen(PORT, () => {
