@@ -17,7 +17,7 @@ app.get("/posts", (req, res) => {
 app.post("/posts", (req, res) => {
   try {
     const title = req.body.title;
-    const post = {
+    const post = {  
       id: (posts.length + 1).toString(),
       title: title,
     };
