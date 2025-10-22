@@ -1,36 +1,20 @@
 import React, { useState, useEffect } from "react";
-
-const CommentList = ({ postId, refreshKey }) => {
-  const [comments, setComments] = useState([]);
-
-  const fetchComments = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:5001/comments/${postId}`
-      );
-      const data = await response.json();
-
-      setComments(data.comments || []);
-    } catch (error) {
-      console.error(`Error fetching comments for post ${postId}:`, error);
-    }
-  };
-
-  useEffect(() => {
-    fetchComments();
-  }, [postId, refreshKey]); 
+import { use } from "react";
+const CommentList = ({ comments }) => {
 
   const renderedComments = comments.map((comment) => (
     <li key={comment.id} style={{ fontSize: '0.9em', margin: '5px 0' }}>
-      {comment.comment} 
+      {comment.content} 
     </li>
   ));
 
 
   return (
     <div style={{ paddingLeft: '15px' }}>
-      <h6>Comments</h6>
-      {renderedComments}
+      <h6>{comments.length} Comments</h6>
+      <ul>
+        {renderedComments}
+      </ul>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 
 const express = require("express");
 const cors = require("cors");
+const axios = require("axios")
 
 const app = express();
 const PORT = 5001;
@@ -12,7 +13,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 
-app.get("/comments/:id", (req, res) => {
+app.get("/posts/:id/comments", (req, res) => {
   try {
     const postId = req.params.id;
     
@@ -26,7 +27,7 @@ app.get("/comments/:id", (req, res) => {
   }
 });
 
-app.post("/comments/:id", (req, res) => {
+app.post("/posts/:id/comments", (req, res) => {
   try {
     const postId = req.params.id;
     const commentContent = req.body.comment;
@@ -38,8 +39,15 @@ app.post("/comments/:id", (req, res) => {
     const comment = {
       id: (postComments.length + 1).toString(), 
       postId,
-      comment: commentContent,
+      content: commentContent,
     };
+
+    axios.post("http://localhost:5005/events", {
+          type: "CommentCreated",
+          data: comment,
+        }).catch((error) => {
+          console.log(error);
+        })
     
     postComments.push(comment);
     res.status(201).json({ comment: comment, message: "Comment added successfully" });
@@ -51,8 +59,7 @@ app.post("/comments/:id", (req, res) => {
 });
 
 app.post("/events", (req, res) => {
-  console.log("Received event:", req.body.type);
-  res.send({});
+  res.json({});
 });
 
 app.listen(PORT, () => {

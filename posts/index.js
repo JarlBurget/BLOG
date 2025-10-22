@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
-const posts = []
+const posts = [];
 
 app.get("/posts", (req, res) => {
   res.json({ posts: posts });
@@ -17,18 +17,19 @@ app.get("/posts", (req, res) => {
 app.post("/posts", (req, res) => {
   try {
     const title = req.body.title;
-    const post = {  
-      id: (posts.length + 1).toString(),
+    const id = (posts.length + 1).toString();
+    const post = {
+      id: id,
       title: title,
     };
     posts.push(post);
-
+ 
     axios.post("http://localhost:5005/events", {
-        type: "PostCreated",
-        data: post,
-    }).catch((err) => {
-        console.error("Error sending event to Event Bus:", err);
-    });
+      type: "PostCreated",
+      data: post,
+    }).catch((error) => {
+      console.log(error);
+    })
 
     res.status(201).json({ post: post, message: "Post created successfully" });
   } catch (error) {
@@ -37,8 +38,7 @@ app.post("/posts", (req, res) => {
 });
 
 app.post("/events", (req, res) => {
-  console.log("Received event:", req.body.type);
-  res.send({});
+  res.json({});
 });
 
 app.listen(PORT, () => {

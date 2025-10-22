@@ -9,7 +9,7 @@ const CommentCreate = ({ postId, onCommentCreated }) => {
     if (!content.trim()) return;
 
     const response = await fetch(
-      `http://localhost:5001/comments/${postId}`,
+      `http://localhost:5001/posts/${postId}/comments`,
       {
         method: "POST",
         headers: {
@@ -26,7 +26,9 @@ const CommentCreate = ({ postId, onCommentCreated }) => {
         onCommentCreated();
       }
     } else {
-      console.error("Failed to create comment", response.status);
+      let body = null;
+      try { body = await response.text(); } catch (e) { /* ignore */ }
+      console.error("Failed to create comment", response.status, body);
     }
   };
 
